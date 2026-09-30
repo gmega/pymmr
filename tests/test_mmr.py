@@ -1,8 +1,8 @@
 import hashlib
-from random import Random, seed
-from typing import List, Final
+from random import Random
+from typing import Final
 
-from mmr import MountainRange, LayerKey
+from mmr import LayerKey, MountainRange
 
 BLOCK_LENGTH: Final[int] = 65_536
 
@@ -13,7 +13,7 @@ def gen_block(seed: int, length: int) -> bytes:
     rnd.seed(seed)
     return rnd.randbytes(length)
 
-def gen_blocks(n_blocks: int) -> List[bytes]:
+def gen_blocks(n_blocks: int) -> list[bytes]:
     return [
         # I don't care so much about the seed, just want
         # different blocks.
@@ -41,7 +41,7 @@ def test_should_create_single_node_range() -> None:
 
     assert len(mr) == 1
     assert mr.root() == C(
-        int(1).to_bytes(),
+        (1).to_bytes(),
         H(blocks[0]),
         LayerKey.OtherParents
     )
@@ -53,7 +53,7 @@ def test_should_create_simple_tree_range() -> None:
 
     assert len(mr) == 3
     assert mr.root() == C(
-        int(len(mr)).to_bytes(),
+        len(mr).to_bytes(),
         C(
             H(blocks[0]), H(blocks[1]),
             LayerKey.DirectParents
@@ -67,7 +67,7 @@ def test_should_create_complex_tree_range() -> None:
     mr.extend(blocks)
     assert len(mr) == 26
     assert mr.root() == C(
-        int(26).to_bytes(),
+        (26).to_bytes(),
         C(
             # Subtree with 8 leaves.
             C(
